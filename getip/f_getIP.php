@@ -22,7 +22,6 @@ function getIP()
     return $realip;
 }
 
-//echo getIP();
 
 ?>
 

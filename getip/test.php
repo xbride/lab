@@ -6,8 +6,11 @@
 
 <body>
 
-<?php include "f_getIP.php"; 
-	echo getIP();
+<?php 
+	include "f_getIP.php";
+	include "f_visit.php"; 
+	$ip = getIP();
+	//echo $ip."<br>"."·ÃÎÊ´ÎÊý£º".visit($ip);
 ?>
 
 </body>
