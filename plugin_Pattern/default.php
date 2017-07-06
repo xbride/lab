@@ -19,7 +19,7 @@
 	
 	echo $ip.":".$num;
 	
-	num2 = $pluginManager->trigger('today', $ip);
+	$num2 = $pluginManager->trigger('today', $ip);
 	
 	echo "today:".$num2;
 	
