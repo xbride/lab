@@ -12,6 +12,17 @@
 	
 	$pluginManager->trigger('demo','');
 	
+	echo "<br>";
+		
+	$ip = $pluginManager->trigger('ip','');
+	$num = $pluginManager->trigger('log', $ip);
+	
+	echo $ip.":".$num;
+	
+	num2 = $pluginManager->trigger('today', $ip);
+	
+	echo "today:".$num2;
+	
 	
 ?>
 

@@ -34,8 +34,10 @@ class PluginManager
    // $plugins = get_active_plugins();#这个函数请自行实现 
   
     //函数实现后的最终数据结构效果如下
-    $plugins=array(array("directory"=>"demo",
-    "name"=>"DEMO"));
+    $plugins=array(
+		array("directory"=>"demo","name"=>"DEMO"),
+		array("directory"=>"ip","name"=>"IP"),
+	);
   
   
     if($plugins) 
@@ -107,5 +109,8 @@ class PluginManager
   
 define(STPATH, "./");
 $pluginManager=new PluginManager();
+
+//$pluginManager->trigger('demo','');
+//$pluginManager->trigger('ip','');
 
 ?>

@@ -20,6 +20,7 @@ class IP_actions
     //第三个是插件所执行的方法
     $pluginManager->register('ip', $this, 'getip');
 	$pluginManager->register('log', $this, 'logvisit');
+	$pluginManager->register('today', $this, 'logtoday');
   }
   
   function getip()
@@ -47,19 +48,7 @@ class IP_actions
   }
   
   function logvisit($name)
-  {
-		/*
-			log visitor ip and visit time summary to ip.log
-			return record count
-		*/
-		
-		/*
-			if noexist 
-				create
-			add record
-			return record count
-		*/
-		
+  {		
 		$fname = $name.".visit";
 		//echo $fname;
 		if(is_readable($fname) == false){
@@ -69,6 +58,28 @@ class IP_actions
 		
 		$myfile = fopen($fname, "a") or die("Unable to create file!");
 		fwrite($myfile, date("Y/m/d H:i:s")."\r\n");
+		fclose($myfile);
+		
+		$content = file_get_contents($fname);
+		$array = explode("\r\n", $content);
+		
+		return count($array)-1;
+	}
+	
+	function logtoday($name)
+  	{		
+		
+		//$fname = $name.".visit";
+		$fname = date("Y-m-d").".today";
+		
+		//echo $fname;
+		if(is_readable($fname) == false){
+			$myfile = fopen($fname, "w") or die("Unable to create file!");
+			fclose($myfile);
+		}
+		
+		$myfile = fopen($fname, "a") or die("Unable to create file!");
+		fwrite($myfile, $name.": ".date("Y/m/d H:i:s")."\r\n");
 		fclose($myfile);
 		
 		$content = file_get_contents($fname);

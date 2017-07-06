@@ -26,3 +26,5 @@ class DEMO_actions
     echo 'Hello World';
   }
 }
+
+?>
