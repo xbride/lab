@@ -1,12 +1,6 @@
 <?php
 function getIP()
 {
-	echo "11"
-	return "1";
-}
-
-function getIP_()
-{
     static $realip;
     if (isset($_SERVER)){
         if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
@@ -28,7 +22,7 @@ function getIP_()
     return $realip;
 }
 
-//www.111cn.net
-	echo getIP_();
+//echo getIP();
+
 ?>
 

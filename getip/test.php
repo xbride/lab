@@ -1,15 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
 <title>无标题文档</title>
+	<!-- get ip wuxiao <script type="text/javascript" src="f_getIP.php"></script> -->
 </head>
-<?php
-	echo "IP：";
-	include "./f_getIP.php;";
-	echo "IP：" . getIP();
-?>
 
 <body>
+
+<?php include "f_getIP.php"; 
+	echo getIP();
+?>
+
 </body>
 </html>
