@@ -1,5 +1,47 @@
 <html>
 <head>
+
+<!-- 自适应代码-->	
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<!-- 自适应代码-->	
+
+<!-- 自适应代码 自动换行-->
+<style type="text/css"> 
+pre{
+white-space: pre-wrap;       /* css-3 */ 
+white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */ 
+white-space: -pre-wrap;      /* Opera 4-6 */ 
+white-space: -o-pre-wrap;    /* Opera 7 */ 
+word-wrap: break-word;       /* Internet Explorer 5.5+ */ 
+} 
+</style>
+<!-- 自适应代码-->
+
+	<!-- 自适应代码-->
+	<style type="text/css"> 
+	#divMain_mobile{display:none}
+	@media(max-width:960px)
+	{
+  
+
+    /* 为了避免正文图片超出屏幕宽度 */
+    /* 正文图片宽度最多是屏幕宽度的90% */
+    #divProduct img{max-width:90%} 
+	
+	
+	#divMain{display:none}
+	
+	#divMain_mobile{display:block}
+	#divMain_mobile img{max-width:99%} 
+
+    
+	}
+	</style>
+	<!-- 自适应代码-->
+	
 <title>无标题文档</title>
 </head>
 <body>
@@ -18,10 +60,12 @@
 	{
 		if($x>0)
 			break;
+		echo ('<div align="center" id="divProduct">');
 		echo ('<img src="');
 		echo ("$images[$x]");
-		echo (' />');
+		echo ('" />');
 		echo ('<br><br>');
+		echo ('</div>');
 	}
 ?> 
 

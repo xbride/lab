@@ -23,6 +23,30 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 } 
 </style>
 <!-- 自适应代码-->
+
+	<!-- 自适应代码-->
+	<style type="text/css"> 
+	#divMain_mobile{display:none}
+	@media(max-width:960px)
+	{
+  
+
+    /* 为了避免正文图片超出屏幕宽度 */
+    /* 正文图片宽度最多是屏幕宽度的90% */
+    #divProduct img{max-width:90%} 
+	
+	
+	#divMain{display:none}
+	
+	#divMain_mobile{display:block}
+	#divMain_mobile img{max-width:99%} 
+
+    
+	}
+	</style>
+	<!-- 自适应代码-->
+	
+	
 	
 
 
@@ -165,10 +189,12 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			{
 				if($x>0)
 					break;
+				echo ('<div align="center" id="divProduct">');
 				echo ('<img src="');
 				echo ("$images[$x]");
-				echo (' />');
+				echo ('" />');
 				echo ('<br><br>');
+				echo ('</div>');
 			}
 		?> 
 		<form action="handle.php" name="form" method="post" enctype="multipart/form-data">   
