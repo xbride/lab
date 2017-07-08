@@ -1,4 +1,4 @@
-<!-- 070701
+<!-- 070708
 sheshimorendezifuchuan
 -->
 
@@ -84,6 +84,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		mkdir($new);					
 		copy("indix.txt",$new."/indix.php");
 		copy("indix.txt",$new."/indix.txt");	
+		copy("handle.php",$new."/handle.php");	
 		$text=$_GET["text"];
 		if($text!="")
 		{
@@ -152,6 +153,29 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		</div>
 		
 		</form>
+		
+		
+		
+		<?php   
+			//$dir = ".";  
+			//chdir($dir);  
+			$images = glob("*.{gif,png,jpg}", GLOB_BRACE);	
+			$arrlength = count($images);
+			for($x=0;$x<$arrlength;$x++) 
+			{
+				if($x>0)
+					break;
+				echo ('<img src="');
+				echo ("$images[$x]");
+				echo (' />');
+				echo ('<br><br>');
+			}
+		?> 
+		<form action="handle.php" name="form" method="post" enctype="multipart/form-data">   
+			<input type="file" name="file" />
+			<input type="submit" name="submit" value="上传" />
+		</form> 
+
 		
 		<!-- 默认焦点 -->
 		<script>
