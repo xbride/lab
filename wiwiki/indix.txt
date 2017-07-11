@@ -1,4 +1,4 @@
-<!-- 070708
+<!-- 070711
 sheshimorendezifuchuan
 -->
 
@@ -54,6 +54,97 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 </head>
 
 <body>
+
+<?php 
+	function getdirs($path, &$dirs, $name){	
+		if(is_dir($path))
+		{
+			//$dirs[] = $path;
+			$dp = dir($path);
+			while($file = $dp->read()){
+				if(($file!=".") && ($file!="..")){
+					if(is_dir($path."/".$file)&&($name == $file))
+					if(($name == $file))
+						$dirs[] = $path;
+					getdirs($path."/".$file, $dirs,  $name);
+				}
+			}	
+			$dp -> close();	
+		}
+	}
+	
+	function getdirnamesbydir($dir, $name){
+		$dirs = array();
+		getdirs($dir, $dirs, $name);
+		return $dirs;
+	}
+	
+	/*
+	$dirnames = getdirnamesbydir(".", "a");
+	foreach($dirnames as $value){
+		echo $value. "<br />";
+	}
+	*/
+?>
+
+<?php
+	$level = $_GET["level"];
+	if($level == "")
+		$level = 1;
+	else
+		$level++;
+?>
+
+
+<?php  //显示该名称的所有父级目录
+	
+	/*	显示当前目录名 $name	$urlall网页地址,  $url网页目录		*/
+	$urlall='http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"];
+	$url=dirname($urlall);
+	$name=substr($url,strrpos($url,"/")+1);
+
+	$cnt = $level;
+	while(($cnt--)>1)
+		$s=$s."../";
+
+	//echo "s：".$s."<br/ >";
+	//echo "name：".$name."<br/ >";
+
+	$dirnames = getdirnamesbydir($s, $name);
+	foreach($dirnames as $value){
+		$str=substr($value,strrpos($value,"/")+1);
+		if($str == ""){
+			$str = "(root)";
+			echo '<a href="'.$value.'/index.php">';	
+		}
+		else{
+			echo '<a href="'.$value.'/indix.php">';
+		}
+		echo $str.'</a> ';
+	}
+	echo '<br>';
+	/* */
+?>
+
+		<?php   
+			//$dir = "."; 
+			//chdir($dir);
+			$images = glob("*.{gif,png,jpg,GIF,PNG,JPG}", GLOB_BRACE);
+			$arrlength = count($images);
+			//echo $arrlength;
+			for($x=0; $x<$arrlength; $x++) 
+			{
+				if($x>0)
+					break;
+				echo ('<div align="center" id="divProduct">');
+				echo ('<img src="');
+				echo ("$images[$x]");
+				echo ('" />');
+				echo ('<br><br>');
+				echo ('</div>');
+			}
+		?> 
+
 <?php	
 	/*	显示当前目录名 $name
 		$urlall网页地址,  $url网页目录		*/
@@ -64,6 +155,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	//$n= strrpos($url,"/");
 	//echo $n;
 	$name=substr($url,strrpos($url,"/")+1);
+	echo '['.$level.']';
 	echo "<b>".$name."</b>";	
 	echo ":<br>&nbsp;&nbsp;&nbsp;&nbsp;";
 		
@@ -91,7 +183,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		if(is_dir($filename[$i]))  //判断是否为文件夹
 		{
 			if($filename[$i]!="."&&$filename[$i]!="..")
-				echo '<a href='.$filename[$i].'/indix.php?name='.$name.'>'.$filename[$i].'</a> ';
+				echo '<a href='.$filename[$i].'/indix.php?level='.$level.'&name='.$name.'>'.$filename[$i].'</a> ';
 		}
 	} 
 	echo "</p>";
@@ -107,7 +199,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	if($new!=""){
 		mkdir($new);					
 		copy("indix.txt",$new."/indix.php");
-		copy("indix.txt",$new."/indix.txt");	
+		copy("indix.txt",$new."/indix.txt");
 		copy("handle.php",$new."/handle.php");	
 		$text=$_GET["text"];
 		if($text!="")
@@ -130,7 +222,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		$url = $new; 
 		//echo $url;
 		echo "<script language='javascript' type='text/javascript'>";
-		echo "window.location.href='$url/indix.php?name=$name'";
+		echo "window.location.href='$url/indix.php?level=$level&name=$name'";
 		//echo "?name='$name'";
 		echo "</script>";
 	}
@@ -142,7 +234,6 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	}
 	else
 	{
-	
 ?>
 
 		<!-- 转到新页		-->
@@ -150,21 +241,23 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		function check(){
 			var j=mainform.txtNew.value;
 			var k=mainform.textArea.value;
-			window.location='<?php echo $_SERVER['PHP_SELF']; ?>?new='+j+'&text='+k;
+			window.location='<?php echo $_SERVER['PHP_SELF']; ?>?level=<?php echo $_GET["level"]; ?>&new='+j+'&text='+k;
 		}
 		</script>
 
 		<!-- 表单 -->
 		<form name="mainform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 		<div>
-			<input name="txtFrom" type="text" readonly="true"
-				style="font-size:24px" value="<?php echo $_GET["name"]?>";>
+			<div align="center"><input name="txtFrom" type="text" readonly="true"
+				style="font-size:24px" value="<?php echo $_GET["name"]?>";></div>
 			<br>
 			<br>
 
-			<input name="txtNew" type="text" style="font-size:18px"; value="";>:
+			<input name="txtNew" type="text" style="font-size:18px"; size="8"; value="";>:
 			<br><br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input name="textArea" type="text" style="font-size:18px"; value="" id="focuseId";>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<!--<input name="textArea" type="text" style="font-size:18px"; value="" id="focuseId";>-->
+			<textarea name="textArea" cols="" rows="" style="font-size:18px"; id="focuseId";></textarea>
 			<br><br>
 					
 			
@@ -178,23 +271,6 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		
 		</form>
 		
-		
-		
-		<?php   
-			//$dir = ".";  
-			//chdir($dir);  
-			$images = glob("*.{gif,png,jpg}", GLOB_BRACE);	
-			$arrlength = count($images);
-			for($x=0;$x<$arrlength;$x++) 
-			{
-				if($x>0)
-					break;
-				echo ('<img src="');
-				echo ("$images[$x]");
-				echo ('" />');
-				echo ('<br><br>');
-			}
-		?> 
 		<form action="handle.php" name="form" method="post" enctype="multipart/form-data">   
 			<input type="file" name="file" />
 			<input type="submit" name="submit" value="上传" />
