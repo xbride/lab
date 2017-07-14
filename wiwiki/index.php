@@ -1,4 +1,4 @@
-<!-- 07150007
+<!-- 07150125
 sheshimorendezifuchuan
 -->
 
@@ -83,8 +83,15 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	/*	显示当前目录名 $name	$urlall网页地址,  $url网页目录		*/
 	$urlall='http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"];
 	$url=dirname($urlall);
-	$name=substr($url,strrpos($url,"/")+1);
-
+	$name=0;
+	if(strpos($url,"?")){
+		$name=substr($url,0,strpos($url,"?")-10);
+		$name=substr($name,strrpos($name,"/")+1);
+	}
+	else{
+		$name=substr($url,strrpos($url,"/")+1);
+	}
+	
 	$cnt = $level;
 	while(($cnt--)>0)
 		$s=$s."../";
@@ -129,7 +136,14 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	//echo "<br>";
 	//$n= strrpos($url,"/");
 	//echo $n;
-	$name=substr($url,strrpos($url,"/")+1);
+	$name=0;
+	if(strpos($url,"?")){
+		$name=substr($url,0,strpos($url,"?")-10);
+		$name=substr($name,strrpos($name,"/")+1);
+	}
+	else{
+		$name=substr($url,strrpos($url,"/")+1);
+	}
 	echo '['.$level.']';
 	echo "<b>".$name."</b>";	
 	echo ":<br>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -311,8 +325,8 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			<br>
 			<input type="submit" value="Go">
 			-->
-			<a onClick="check()" href="#" >提交(URL)</a>
-			<input name="txtimgurl" type="text" value="";>
+			<a onClick="check()" href="#" >提交(URL)</a>: 
+			<input name="txtimgurl" type="text" size="30" value="";>
 
 		</div>
 		
