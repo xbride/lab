@@ -1,4 +1,4 @@
-<!-- 07142158
+<!-- 070711
 sheshimorendezifuchuan
 -->
 
@@ -29,14 +29,19 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	#divMain_mobile{display:none}
 	@media(max-width:960px)
 	{
+  
+
     /* 为了避免正文图片超出屏幕宽度 */
     /* 正文图片宽度最多是屏幕宽度的90% */
     #divProduct img{max-width:90%} 
 	
+	
 	#divMain{display:none}
 	
 	#divMain_mobile{display:block}
-	#divMain_mobile img{max-width:99%}  
+	#divMain_mobile img{max-width:99%} 
+
+    
 	}
 	</style>
 	<!-- 自适应代码-->
@@ -51,25 +56,43 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 <body>
 
 <?php //功能函数
-	include "f_getdirs.php";
-?>
-
-<?php  //获得层数  $level
-	$filename = "config.ini";
-	if (is_readable($filename) == false) { 
-		$myfile = fopen($filename, "w") or die("Unable to open file!");
-		$level = $_GET["level"];
-		if($level == "")
-			$level = 0;
-		fwrite($myfile, $level."\r\n");
-		fclose($myfile);
+	function getdirs($path, &$dirs, $name){	
+		if(is_dir($path))
+		{
+			//$dirs[] = $path;
+			$dp = dir($path);
+			while($file = $dp->read()){
+				if(($file!=".") && ($file!="..")){
+					if(is_dir($path."/".$file)&&($name == $file))
+					if(($name == $file))
+						getdirs($path."/".$file, $dirs,  $name);
+				$dirs[] = $path;
+					}
+			}	
+			$dp -> close();	
+		}
 	}
 	
-	$content = file_get_contents($filename);
-	$array = explode("\r\n", $content);
-	$level = $array[0];
+	function getdirnamesbydir($dir, $name){
+		$dirs = array();
+		getdirs($dir, $dirs, $name);
+		return $dirs;
+	}
+	
+	/*
+	$dirnames = getdirnamesbydir(".", "a");
+	foreach($dirnames as $value){
+		echo $value. "<br />";
+	}
+	*/
+?>
+
+<?php  //获得层数
+	$level = $_GET["level"];
 	if($level == "")
-		$level = 0;
+		$level = 1;
+	else
+		$level++;
 ?>
 
 
@@ -81,7 +104,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	$name=substr($url,strrpos($url,"/")+1);
 
 	$cnt = $level;
-	while(($cnt--)>0)
+	while(($cnt--)>1)
 		$s=$s."../";
 
 	//echo "s：".$s."<br/ >";
@@ -89,7 +112,6 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 
 	$dirnames = getdirnamesbydir($s, $name);
 	foreach($dirnames as $value){
-		//echo "<br>[".$value."]<br>";  
 		$str=substr($value,strrpos($value,"/")+1);
 		if($str == ""){
 			$str = "(root)";
@@ -110,7 +132,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			$images = glob("*.{gif,png,jpg,GIF,PNG,JPG}", GLOB_BRACE);
 			$arrlength = count($images);
 			//echo $arrlength;
-			for($x=0; $x<$arrlength; $x++)
+			for($x=0; $x<$arrlength; $x++) 
 			{
 				if($x>0)
 					break;
@@ -160,9 +182,8 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	{
 		if(is_dir($filename[$i]))  //判断是否为文件夹
 		{
-			$lvl=$level;
 			if($filename[$i]!="."&&$filename[$i]!="..")
-				echo '<a href='.$filename[$i].'/indix.php?level='.$lvl.'&name='.$name.'>'.$filename[$i].'</a> ';
+				echo '<a href='.$filename[$i].'/indix.php?level='.$level.'&name='.$name.'>'.$filename[$i].'</a> ';
 		}
 	} 
 	echo "</p>";
@@ -175,33 +196,11 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		复制 indix模板
 		转向新页 $new		IO		*/
 	$new=$_GET["new"];
-	if($new != "")
-	{
+	if($new!=""){
 		mkdir($new);					
 		copy("indix.txt",$new."/indix.php");
 		copy("indix.txt",$new."/indix.txt");
 		copy("handle.php",$new."/handle.php");	
-		copy("f_getdirs.php",$new."/f_getdirs.php");  
-		copy("gb2312.txt",$new."/gb2312.txt");  
-		copy("zys.txt",$new."/zys.txt");  
-		
-		
-		$lvl = $level+1;
-		$fconfig = fopen($new."/"."config.ini", "w") or die("Unable to open file!"."config.ini");
-		if(!fwrite($fconfig,$lvl."\r\n")){
-			die("Unable to write file!"."config.ini");
-		}
-		fclose($fconfig);
-	
-/*	
-//		if(rand(0,2) == 0)
-//		{
-			$fn = $new."/".$new.".txt";
-			if(file_exist($fn)){
-				copy($fn, $fn.date("YmdHis"));
-			}
-//		}
-*/	
 		$text=$_GET["text"];
 		if($text!="")
 		{
@@ -221,23 +220,11 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		*/
 
 		$url = $new; 
-		$lvl = $level+1;
 		//echo $url;
 		echo "<script language='javascript' type='text/javascript'>";
-		echo "window.location.href='$url/indix.php?level=$lvl&name=$name'";
+		echo "window.location.href='$url/indix.php?level=$level&name=$name'";
 		//echo "?name='$name'";
 		echo "</script>";
-	}
-	else //$new = "" 
-	{
-		/*
-		
-		*/
-		//*GBK ALLOC		
-		
-		//getlength
-		
-				
 	}
 
 	
@@ -253,16 +240,8 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		function check(){
 			var j=mainform.txtNew.value;
 			var k=mainform.textArea.value;
-			window.location='<?php echo $_SERVER['PHP_SELF']; ?>?level=<?php 
-			$lvl = $_GET["level"];
-			echo $lvl; ?>&new='+j+'&text='+k;
+			window.location='<?php echo $_SERVER['PHP_SELF']; ?>?level=<?php echo $_GET["level"]; ?>&new='+j+'&text='+k;
 		}
-		
-		 function myFocus(obj){
-             //判断文本框中的内容是否是默认内容
-               obj.value="";
-         }
-		 
 		</script>
 
 		<!-- 表单 -->
@@ -273,29 +252,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			<br>
 			<br>
 
-			<input name="txtNew" type="text" style="font-size:18px"; size="8"; value="<?php //
-			function getrand($filename, $width){
-				$size = filesize($filename);
-				$len = $size/2;
-				$pos = rand(0, $len-$width)*2;
-				$file = fopen($filename,"r");
-				fseek($file,$pos);
-				$contents = fread($file, $width*2);
-				fclose($file);
-				return $contents;
-			}
-	
-			do{
-				if(rand(0,2) == 0)
-					$new = getrand("gb2312.txt",1);
-				else
-					$new = getrand("gb2312.txt",1);
-			}while(file_exists($new));
-			echo $new;
-			?>";
-			
-			onFocus="myFocus(this)"
-			>:
+			<input name="txtNew" type="text" style="font-size:18px"; size="8"; value="";>:
 			<br><br>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<!--<input name="textArea" type="text" style="font-size:18px"; value="" id="focuseId";>-->
@@ -318,26 +275,6 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			<input type="submit" name="submit" value="上传" />
 		</form> 
 
-		<?php   //显示图像
-			//$dir = "."; 
-			//chdir($dir);
-			$images = glob("*.{gif,png,jpg,GIF,PNG,JPG}", GLOB_BRACE);
-			$arrlength = count($images);
-			//echo $arrlength;
-			for($x=0; $x<$arrlength; $x++) 
-			{
-				if($x>0)
-				{
-					echo ('<div align="center" id="divProduct">');
-					echo ('<img src="');
-					echo ("$images[$x]");
-					echo ('" />');
-					echo ('<br><br>');
-					echo ('</div>');
-				}
-			}
-		?> 
-
 		
 		<!-- 默认焦点 -->
 		<script>
@@ -350,15 +287,5 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	}
 ?>
 
-<div align="center">
-<br><br><br><br><br>
-<?php 
-	if($level>=1)
-	{
-		echo '<a href="https://zh.wikipedia.org/zh/%E4%B8%8D%E4%BD%9C%E6%81%B6">Dontbe1vil<a>';
-	}
-?>
-
-</div>
 </body>
 </html>
