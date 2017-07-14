@@ -1,4 +1,4 @@
-<!-- 07142158
+<!-- 07150007
 sheshimorendezifuchuan
 -->
 
@@ -54,7 +54,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	include "f_getdirs.php";
 ?>
 
-<?php  //获得层数  $level
+<?php  //获得层数  $level 与图片地址
 	$filename = "config.ini";
 	if (is_readable($filename) == false) { 
 		$myfile = fopen($filename, "w") or die("Unable to open file!");
@@ -62,6 +62,9 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		if($level == "")
 			$level = 0;
 		fwrite($myfile, $level."\r\n");
+		$imgurl = $_GET["imgurl"];
+		if($imgurl != "")
+			fwrite($myfile, $imgurl."\r\n");
 		fclose($myfile);
 	}
 	
@@ -70,8 +73,10 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	$level = $array[0];
 	if($level == "")
 		$level = 0;
+	$imgurl = $array[1];
+	if($imgurl == "")
+		$imgurl = $_GET["imgurl"];
 ?>
-
 
 <?php  //显示该名称的所有父级目录   IO
 	
@@ -107,20 +112,12 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		<?php   //显示图像
 			//$dir = "."; 
 			//chdir($dir);
-			$images = glob("*.{gif,png,jpg,GIF,PNG,JPG}", GLOB_BRACE);
-			$arrlength = count($images);
-			//echo $arrlength;
-			for($x=0; $x<$arrlength; $x++)
-			{
-				if($x>0)
-					break;
-				echo ('<div align="center" id="divProduct">');
-				echo ('<img src="');
-				echo ("$images[$x]");
-				echo ('" />');
-				echo ('<br><br>');
-				echo ('</div>');
-			}
+			if($imgurl == "")
+				$imgurl = $_GET["imgurl"];
+			echo ('<div align="center" id="divProduct">');
+			if($imgurl != "")
+				echo '<img src="'.$imgurl.'">';
+			echo ('</div>');
 		?> 
 
 <?php	
@@ -162,7 +159,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		{
 			$lvl=$level;
 			if($filename[$i]!="."&&$filename[$i]!="..")
-				echo '<a href='.$filename[$i].'/indix.php?level='.$lvl.'&name='.$name.'>'.$filename[$i].'</a> ';
+				echo '<a href='.$filename[$i].'/indix.php?imgurl='.$imgurl.'&level='.$lvl.'&name='.$name.'>'.$filename[$i].'</a> ';
 		}
 	} 
 	echo "</p>";
@@ -191,6 +188,10 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		if(!fwrite($fconfig,$lvl."\r\n")){
 			die("Unable to write file!"."config.ini");
 		}
+		if(!fwrite($fconfig,$imgurl."\r\n")){
+			die("Unable to write file!"."config.ini");
+		}
+		
 		fclose($fconfig);
 	
 /*	
@@ -222,9 +223,10 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 
 		$url = $new; 
 		$lvl = $level+1;
+		$img=$_GET["imgurl"];
 		//echo $url;
 		echo "<script language='javascript' type='text/javascript'>";
-		echo "window.location.href='$url/indix.php?level=$lvl&name=$name'";
+		echo "window.location.href='$url/indix.php?imgurl=$img&level=$lvl&name=$name'";
 		//echo "?name='$name'";
 		echo "</script>";
 	}
@@ -253,9 +255,10 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		function check(){
 			var j=mainform.txtNew.value;
 			var k=mainform.textArea.value;
+			var m=mainform.txtimgurl.value;
 			window.location='<?php echo $_SERVER['PHP_SELF']; ?>?level=<?php 
 			$lvl = $_GET["level"];
-			echo $lvl; ?>&new='+j+'&text='+k;
+			echo $lvl; ?>&new='+j+'&text='+k+'&imgurl='+m;
 		}
 		
 		 function myFocus(obj){
@@ -299,7 +302,7 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			<br><br>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<!--<input name="textArea" type="text" style="font-size:18px"; value="" id="focuseId";>-->
-			<textarea name="textArea" cols="" rows="" style="font-size:18px"; id="focuseId";></textarea>
+			<textarea name="textArea" cols="24" rows="5" style="font-size:18px"; id="focuseId";></textarea>
 			<br><br>
 					
 			
@@ -308,7 +311,9 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 			<br>
 			<input type="submit" value="Go">
 			-->
-			<a onClick="check()" href="#" >提交</a>
+			<a onClick="check()" href="#" >提交(URL)</a>
+			<input name="txtimgurl" type="text" value="";>
+
 		</div>
 		
 		</form>
@@ -321,23 +326,25 @@ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 		<?php   //显示图像
 			//$dir = "."; 
 			//chdir($dir);
+			echo ('<div align="center" id="divProduct">');
+					
 			$images = glob("*.{gif,png,jpg,GIF,PNG,JPG}", GLOB_BRACE);
 			$arrlength = count($images);
 			//echo $arrlength;
-			for($x=0; $x<$arrlength; $x++) 
+			for($x=0; $x<$arrlength; $x++)
 			{
 				if($x>0)
-				{
-					echo ('<div align="center" id="divProduct">');
-					echo ('<img src="');
-					echo ("$images[$x]");
-					echo ('" />');
-					echo ('<br><br>');
-					echo ('</div>');
-				}
+					break;
+				
+				echo ('<img src="');
+				echo ("$images[$x]");
+				echo ('" />');
+				echo ('<br><br>');
 			}
+			echo ('</div>');
 		?> 
-
+		
+						
 		
 		<!-- 默认焦点 -->
 		<script>
